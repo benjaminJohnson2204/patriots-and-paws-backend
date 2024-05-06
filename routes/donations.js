@@ -69,10 +69,13 @@ donationsRouter.get('/', async (req, res) => {
         ON relation3.route_id = d.route_id
         ${allDonationsWhereClause}
         ORDER BY status, pickup_date, submitted_date
-        ${numDonations ? `LIMIT ${numDonations}` : ''}
-        ${pageNum ? `OFFSET ${(pageNum - 1) * numDonations}` : ''}
+        LIMIT $(numDonations)
+        OFFSET $(pageNum)
         ;`,
-      { numDonations, pageNum },
+      {
+        numDonations: numDonations,
+        pageNum: pageNum,
+      },
     );
 
     const totalDonations = await db.query(
